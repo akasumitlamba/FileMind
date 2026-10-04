@@ -79,3 +79,7 @@ PyInstaller excludes incompatible PATH-discovered ICU DLLs in GROK.spec. Do not 
 ## Collaboration rules
 
 Make scoped changes and preserve unrelated work. Keep source, tests, context and release notes consistent. Distinguish implemented features, automated checks, native observations and unverified behavior. Commit source before tagging a release. Release assets belong in GitHub Releases, not Git history. Do not invent a license or change repository visibility without the owner asking.
+
+## Minor usability refinements
+
+- The sort menu marks the currently active sort field.

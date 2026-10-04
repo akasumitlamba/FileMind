@@ -108,3 +108,7 @@ Target-machine drag/drop and DPI matrix; shell-native transactional operations/u
 See [security review](docs/SECURITY.md), [manual test plan](docs/MANUAL-TESTS.md), and [third-party notices](docs/THIRD-PARTY-NOTICES.md).
 
 Future file-editing, conversion and terminal tools are specified in [AI tools roadmap](docs/AI-TOOLS-ROADMAP.md), not implemented in this version.
+
+## Minor usability refinements
+
+- The sort menu marks the currently active sort field.

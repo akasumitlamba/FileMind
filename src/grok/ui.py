@@ -583,7 +583,9 @@ class Window(QWidget):
         menu = QMenu(self)
         menu.addAction("Search current folder only").setEnabled(False)
         for label, column in [("Sort by name", 0), ("Sort by type", 2), ("Sort by size", 1), ("Sort by modified date", 3)]:
-            menu.addAction(label, lambda c=column: self.set_sort(c))
+            action = menu.addAction(label, lambda c=column: self.set_sort(c))
+            action.setCheckable(True)
+            action.setChecked(column == self.proxy.sortColumn())
         menu.addSeparator()
         ascending = menu.addAction("Ascending", lambda: self.set_sort(self.s["sort"], False))
         descending = menu.addAction("Descending", lambda: self.set_sort(self.s["sort"], True))
