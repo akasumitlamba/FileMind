@@ -1,0 +1,19 @@
+__pycache__/
+.pytest_cache/
+build/
+dist/
+release/
+*.pfx
+*.cer
+.venv/
+*.egg-info/
+GROK-debug.spec
+website/download/*.msix
+website/download/*.cer
+
+# Local secrets and machine state
+.env
+.env.*
+!.env.example
+*.pem
+*.key
