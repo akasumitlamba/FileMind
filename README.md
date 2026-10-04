@@ -112,3 +112,4 @@ Future file-editing, conversion and terminal tools are specified in [AI tools ro
 ## Minor usability refinements
 
 - The sort menu marks the currently active sort field.
+- An empty search result says "No matches"; clearing search restores the item count.

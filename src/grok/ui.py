@@ -623,7 +623,8 @@ class Window(QWidget):
 
     def update_count(self):
         count = self.proxy.rowCount(self.view.rootIndex())
-        self.empty.setText(f"{count} item" if count == 1 else f"{count} items")
+        label = f"{count} item" if count == 1 else f"{count} items"
+        self.empty.setText("No matches" if self.search.text() and count == 0 else label)
         self.empty.setStyleSheet("color:#888; background:transparent; font-size:8pt; padding-left:5px;")
         self.empty.setToolTip("Clear search to see all files." if self.search.text() and not count else "Current folder item count; updates as the directory loads.")
 

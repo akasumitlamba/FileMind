@@ -83,3 +83,4 @@ Make scoped changes and preserve unrelated work. Keep source, tests, context and
 ## Minor usability refinements
 
 - The sort menu marks the currently active sort field.
+- An empty search result says "No matches"; clearing search restores the item count.
