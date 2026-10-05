@@ -229,3 +229,29 @@ def test_empty_folders_and_independent_dock(app, tmp_path):
     w.select_action.setChecked(False)
     assert not w.view.selection_mode and not w.grid.selection_mode
     w.hide(); w.deleteLater(); app.processEvents()
+
+def test_workspace_window_controls(app, tmp_path, monkeypatch):
+    s = Settings(tmp_path / 'prefs'); s.data['default_path'] = str(tmp_path)
+    w = Window(s, test_mode=True); settle(app, w)
+    assert w.window_controls.isHidden()
+    w.toggle_wide(); app.processEvents()
+    assert w.window_controls.isVisible()
+    area = w.target_screen().availableGeometry()
+    assert w.geometry() == area
+    w.maximize_button.click(); app.processEvents()
+    assert area.contains(w.geometry()) and w.width() < area.width()
+    assert w.maximize_button.toolTip() == 'Maximize'
+    w.maximize_button.click(); app.processEvents()
+    assert w.geometry() == area
+    w.minimize_button.click(); app.processEvents()
+    assert w.isMinimized()
+    w.auto_collapse()
+    assert w.expanded and w.wide
+    w.showNormal(); app.processEvents()
+    quit_calls = []
+    monkeypatch.setattr(QApplication.instance(), 'quit', lambda: quit_calls.append(True))
+    w.close_button.click()
+    assert quit_calls == [True]
+    w.toggle_wide(); app.processEvents()
+    assert w.window_controls.isHidden()
+    w.hide(); w.deleteLater(); app.processEvents()

@@ -73,6 +73,7 @@ class Window(QWidget):
         self.nav_token = 0
         self.expanded = False
         self.wide = False
+        self.workspace_maximized = True
         self.current = ""
         self.vault = windows.Vault("GROK-test" if test_mode else "GROK")
         self.chat_messages = []
@@ -161,6 +162,23 @@ class Window(QWidget):
         header.addWidget(self.pin)
         header.addWidget(button("⚙", "Settings", self.show_settings))
         header.addWidget(button("›", "Collapse (Escape)", lambda: self.set_expanded(False)))
+        self.window_controls = QWidget()
+        controls = QHBoxLayout(self.window_controls)
+        controls.setContentsMargins(0, 0, 0, 0)
+        controls.setSpacing(2)
+        self.minimize_button = button("", "Minimize", self.minimize_workspace)
+        self.minimize_button.setIcon(icon("minimize"))
+        self.maximize_button = button("", "Restore window", self.toggle_workspace_maximized)
+        self.maximize_button.setIcon(icon("restore"))
+        self.close_button = button("", "Close GROK", self.quit)
+        self.close_button.setIcon(icon("close"))
+        self.close_button.setStyleSheet("QPushButton:hover { background:#c42b1c; border-color:#c42b1c; }")
+        for control in (self.minimize_button, self.maximize_button, self.close_button):
+            control.setFixedSize(36, 30)
+            control.setAccessibleName(control.toolTip())
+            controls.addWidget(control)
+        header.addWidget(self.window_controls)
+        self.window_controls.hide()
         layout.addLayout(header)
         subtitle = QLabel("YOUR FILES. WITHIN REACH.")
         subtitle.setObjectName("eyebrow")
@@ -398,8 +416,28 @@ class Window(QWidget):
             self.tabs.setCurrentWidget(self.chat_page)
         self.prompt.setFocus()
 
+    def minimize_workspace(self):
+        self.anim.stop()
+        self.showMinimized()
+
+    def workspace_geometry(self, area):
+        if self.workspace_maximized:
+            return area
+        width, height = round(area.width() * 0.8), round(area.height() * 0.8)
+        return QRect(area.x() + (area.width() - width) // 2,
+                     area.y() + (area.height() - height) // 2, width, height)
+
+    def toggle_workspace_maximized(self):
+        self.workspace_maximized = not self.workspace_maximized
+        self.maximize_button.setIcon(icon("restore" if self.workspace_maximized else "maximize"))
+        label = "Restore window" if self.workspace_maximized else "Maximize"
+        self.maximize_button.setToolTip(label)
+        self.maximize_button.setAccessibleName(label)
+        self.set_expanded(True)
+
     def toggle_wide(self):
         self.wide = not self.wide
+        self.window_controls.setVisible(self.wide)
         if self.wide:
             self.tabs.removeTab(self.tabs.indexOf(self.chat_page))
             self.workspace.addWidget(self.chat_page)
@@ -802,7 +840,7 @@ class Window(QWidget):
     def reposition(self):
         self.anim.stop() if hasattr(self, "anim") else None
         area = self.target_screen().availableGeometry()
-        self.setGeometry(geometry(area, (area.width() if self.wide else self.s["width"]), self.expanded, self.s["position"]))
+        self.setGeometry(self.workspace_geometry(area) if self.wide and self.expanded else geometry(area, self.s["width"], self.expanded, self.s["position"]))
 
     def finish_transition(self):
         self.stack.setCurrentWidget(self.panel if self.expanded else self.dock)
@@ -826,7 +864,7 @@ class Window(QWidget):
         if value:
             self.stack.setCurrentWidget(self.panel)
         area = self.target_screen().availableGeometry()
-        rect = geometry(area, area.width() if self.wide else self.s["width"], value, self.s["position"])
+        rect = self.workspace_geometry(area) if self.wide and value else geometry(area, self.s["width"], value, self.s["position"])
         self.anim.stop()
         if animate and self.s["animation"] and not self.test_mode and QApplication.isEffectEnabled(Qt.UI_AnimateMenu):
             self.anim.setStartValue(self.geometry())
@@ -862,7 +900,7 @@ class Window(QWidget):
         return super().event(event)
 
     def auto_collapse(self):
-        if not self.isActiveWindow() and not QApplication.activeModalWidget() and not QApplication.activePopupWidget() and not self.operation:
+        if not self.wide and not self.isMinimized() and not self.isActiveWindow() and not QApplication.activeModalWidget() and not QApplication.activePopupWidget() and not self.operation:
             self.set_expanded(False)
 
     def toggle_pin(self):
@@ -884,7 +922,10 @@ class Window(QWidget):
 
     def closeEvent(self, event):
         event.ignore()
-        self.set_expanded(False)
+        if self.wide:
+            self.quit()
+        else:
+            self.set_expanded(False)
 
     def quit(self):
         if self.jobs:
