@@ -632,6 +632,7 @@ class Window(QWidget):
         self.set_expanded(True)
         self.tabs.setCurrentIndex(0)
         self.search.setFocus()
+        self.search.selectAll()
 
     def open_selected(self):
         paths = self.active_view().paths()

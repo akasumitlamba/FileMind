@@ -84,3 +84,4 @@ Make scoped changes and preserve unrelated work. Keep source, tests, context and
 
 - The sort menu marks the currently active sort field.
 - An empty search result says "No matches"; clearing search restores the item count.
+- Ctrl+F selects the existing search query for quick replacement.

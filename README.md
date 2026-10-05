@@ -113,3 +113,4 @@ Future file-editing, conversion and terminal tools are specified in [AI tools ro
 
 - The sort menu marks the currently active sort field.
 - An empty search result says "No matches"; clearing search restores the item count.
+- Ctrl+F selects the existing search query for quick replacement.
