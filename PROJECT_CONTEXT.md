@@ -87,3 +87,5 @@ Make scoped changes and preserve unrelated work. Keep source, tests, context and
 - Ctrl+F selects the existing search query for quick replacement.
 
 - Full workspace has Minimize, Maximize/Restore and Close controls. Restore uses a centered 80% work-area window; Close exits GROK (pending jobs must finish). Workspace minimization does not trigger sidebar auto-hide. Sidebar Escape/collapse behavior is retained.
+
+- Chat uses a compact provider/Connect row, a separate conversation-clear action, spacious transcript, bounded scrolling attachment area, and inline waiting feedback in the composer. Saved history and attachment review behavior are preserved.
